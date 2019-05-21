@@ -20,3 +20,55 @@
       yum:
         name: yum-utils
         state: latest
+    
+    - name: Install device-mapper-persistent-data
+      yum:
+        name: device-mapper-persistent-data
+        state: latest
+
+    - name: lvm2
+      yum:
+        name: lvm2
+        state: latest
+
+    - name: Adding repository for docker and locking the package to [docker-ce 17.03.2] for compatibiltiy issues. 
+      yum_repository:
+        name: docker-ce
+        description: docker yum repo
+        state: present 
+        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Installing docker  and locking the version to  [docker-ce 17.03.2]
+      command: yum install -y --setopt=obsoletes=0 docker-ce-17.03.2.ce
+
+    - name: Adding repository for Kubernetes.
+      yum_repository:
+        name: Kubernetes
+        reposdir: /etc/yum.repos.d
+        baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+        gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        enabled: yes
+        gpgcheck: yes
+        repo_gpgcheck: yes
+        
+    - name: Install Kubectl
+      yum:
+        name: kubelet
+        state: latest
+
+    - name: Install kubeadm
+      yum:
+        name: kubeadm
+        state: latest
+
+    - name: Install Kubectl
+      yum:
+        name: kubectl
+        state:  latest
+
+    - name:  Systemd Section
+      systemd:
+        name: kubelet
+        state: started
+        enabled: yes
+        masked: no
