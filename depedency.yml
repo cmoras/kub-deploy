@@ -1,0 +1,22 @@
+- hosts: all
+  become: user
+  tasks:
+    - name: Start with basic setup,  Lets begin sysctl setup.
+      sysctl:
+        name: net.bridge.bridge-nf-call-ip6tables
+        value: 1
+        state: present
+        
+    - name: Disable swap.
+      mount:
+        name: swap
+        fstype: swap
+        state: absent
+    - name: starting the disabling.
+      command: swapoff -a 
+      when: ansible_swaptotal_mb>0 
+
+    - name: Install yum-utils
+      yum:
+        name: yum-utils
+        state: latest
